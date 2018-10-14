@@ -28,14 +28,14 @@ Run below command for migrate only pending migrations which is not run yet
 
 ```php artisan migrate:custom```
 
-#####Options
+##### Options
 ```--file``` for exact file name (filename must be without extension)
 
 ```--refresh``` for existing table
 
 ```--directory``` for subdirectory in migrations folder
 
-######All option has Shortcuts, like
+###### All option has Shortcuts, like
 `-f`  for file
 
 `-r` for refresh
