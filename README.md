@@ -29,12 +29,23 @@ Run below command for migrate only pending migrations which is not run yet
 ```php artisan migrate:custom```
 
 #####Options
-```--file``` for exact file name
+```--file``` for exact file name (filename must be without extension)
+
 ```--refresh``` for existing table
+
 ```--directory``` for subdirectory in migrations folder
 
 ######All option has Shortcuts, like
-`-f` `-r` `-d` 
+`-f`  for file
+
+`-r` for refresh
+
+`-d` for directory
+
+NB: For shortcut use, don't use equal(=) sign, just use space, like
+
+```php artisan migrate:custom -f 2018_10_14_054732_create_tests_table```
+
 
 
 If you have any kind of query, please feel free to share with me
