@@ -1,6 +1,6 @@
 # Laravel Custom DB Migrate
 
-Laravel custom db migrate using individual file name
+Laravel custom db migrate. You can individual file migrate here.
 
 ## Installation
 
