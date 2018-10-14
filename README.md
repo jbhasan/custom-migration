@@ -24,7 +24,17 @@ Its done.
 
 ## How does it work?
 
+Run below command for migrate only pending migrations which is not run yet
 
+```php artisan migrate:custom```
+
+#####Options
+```--file``` for exact file name
+```--refresh``` for existing table
+```--directory``` for subdirectory in migrations folder
+
+######All option has Shortcuts, like
+`-f` `-r` `-d` 
 
 
 If you have any kind of query, please feel free to share with me

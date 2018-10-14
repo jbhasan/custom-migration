@@ -13,7 +13,7 @@ class CustomMigrateCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'migrate:custom {file_name_without_extension=false} {refresh=false} {sub_folder=false}';
+    protected $signature = 'migrate:custom {--f|file=} {--r|refresh} {--d|directory=}';
 
     /**
      * The console command description.
@@ -39,16 +39,16 @@ class CustomMigrateCommand extends Command
      */
     public function handle()
     {
-        $sub_folder = ($this->argument('sub_folder') == 'false') ? false : $this->argument('sub_folder') ;
-        $file_name_without_extension = ($this->argument('file_name_without_extension') == 'false') ? false : $this->argument('file_name_without_extension') ;
-        $refresh = ($this->argument('refresh') == 'false') ? false : $this->argument('refresh') ;
+        $directory = $this->option('directory');
+        $given_file = $this->option('file');
+        $refresh = $this->option('refresh');
 
         $mainPath = database_path('migrations');
-        $directories = glob($mainPath.'/' . $sub_folder . '*' , GLOB_ONLYDIR);
+        $directories = glob($mainPath.'/' . $directory . '*' , GLOB_ONLYDIR);
         $paths = array_merge([$mainPath], $directories);
 
-        if ($file_name_without_extension) {
-            $files[0] = $mainPath.'/'.$file_name_without_extension.'.php';
+        if ($given_file) {
+            $files[0] = $mainPath.'/'.$given_file.'.php';
         } else {
             $files = glob($paths[0] . '/*.php');
         }
@@ -59,7 +59,7 @@ class CustomMigrateCommand extends Command
                 $basename = basename($file);
                 $file_info = pathinfo($basename);
                 $file_name = $file_info['filename'];
-				$file_content = explode("Schema::create('", file_get_contents($files[0]));
+				$file_content = explode("Schema::create('", file_get_contents($file));
 
 				if (count($file_content) > 1) {
 					$file_content = explode("', function (Blueprint", $file_content[1]);
@@ -72,20 +72,27 @@ class CustomMigrateCommand extends Command
 
                 if ($refresh) {
                     DB::table('migrations')->where('migration', $file_name)->delete();
-					Schema::dropIfExists('users');
+					Schema::dropIfExists($table_name);
                      if (Schema::hasTable($table_name)) {
                          Schema::drop($table_name);
                      }
                 }
 
-                $already_migrate = DB::table('migrations')->where('migration', $file_name)->first();
-                if($already_migrate) {
-                    $this->line('-> '.$file_name.' ALREADY MIGRATED');
-                } else {
-                    require_once($mainPath.'/'.$basename);
+				require_once($mainPath.'/'.$basename);
+				$all_classes = get_declared_classes();
+				$lastTableClassName = end($all_classes);
 
-                    $all_classes = get_declared_classes();
-                    $lastTableClassName = end($all_classes);
+				$already_migrate = DB::table('migrations')->where('migration', $file_name)->first();
+				if($already_migrate) {
+					//$this->info($table_name.' => '.Schema::hasTable($table_name));continue;
+					if (Schema::hasTable($table_name)) {
+						$this->line('-> '.$file_name.' ALREADY MIGRATED');
+					} else {
+						$tableClass = new $lastTableClassName();
+						$tableClass->up();
+						$this->info('-> '.$file_name.' SUCCESSFULLY MIGRATED');
+					}
+                } else {
                     try {
 						DB::table('migrations')->insert(['migration' => $file_name, 'batch' => ($batch_no+1)]);
 						if (!Schema::hasTable($table_name)) {
