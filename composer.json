@@ -1,0 +1,19 @@
+{
+    "name": "sayeed/custom-migrate",
+    "description": "Custom migrate in laravel. With indifidual file migrate.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Hasan",
+            "email": "jbhasan@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Sayeed\\CustomMigrate\\": "src/"
+        }
+    }
+}
