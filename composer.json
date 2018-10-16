@@ -1,9 +1,9 @@
 {
     "name": "sayeed/custom-migrate",
-    "description": "Custom migrate in laravel. You can individual file migrate here.",
+    "description": "Custom migrate in laravel. You can individual file migrate here",
+    "keywords": ["migration","migrate","database","specific","table","db"],
     "type": "library",
     "license": "MIT",
-    "keywords": ["migration", "migrate", "database", "specific", "table", "db"],
     "authors": [
         {
             "name": "Hasan",
