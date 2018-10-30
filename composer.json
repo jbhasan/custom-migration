@@ -16,5 +16,12 @@
         "psr-4": {
             "Sayeed\\CustomMigrate\\": "src/"
         }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Sayeed\\CustomMigrate\\CustomMigrateServiceProvider"
+            ]
+        }
     }
 }
