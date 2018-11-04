@@ -63,11 +63,11 @@ Alternatively, you can use the longform version:
 
 You can migrate a specific directory inside your `database/migrations` folder using:
 
-```php artisan migrate:custom -d subfolder/2018_10_14_054732_create_tests_table```
+```php artisan migrate:custom -d migrations-subfolder```
 
 Alternatively, you can use the longform version:
 
-```php artisan migrate:custom --directory subfolder/2018_10_14_054732_create_tests_table```
+```php artisan migrate:custom --directory migrations-subfolder```
 
 ### Refreshing migrations
 
