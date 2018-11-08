@@ -37,6 +37,9 @@ class CustomMigrateCommand extends Command
      *
      * @return mixed
      */
+    public $migrator;
+    public $resolver;
+    public $files;
     public function handle()
     {
         $directory = $this->option('directory');
@@ -56,26 +59,36 @@ class CustomMigrateCommand extends Command
             $batch_no = DB::table('migrations')->max('batch');
 			$this->info('MIGRATION STARTED');
             foreach ($files as $key => $file) {
-                $basename = basename($file);
+            	$basename = basename($file);
                 $file_info = pathinfo($basename);
                 $file_name = $file_info['filename'];
 				$file_content = explode("Schema::create('", file_get_contents($file));
 
+				$table_create_migrate = true;
 				if (count($file_content) > 1) {
 					$file_content = explode("', function (Blueprint", $file_content[1]);
 					if (count($file_content) > 1) {
 						$table_name = $file_content[0];
+					} else {
+						$this->error('-> '.$file_name.' Migration file invalid');
+						continue;
 					}
 				} else {
-					$this->error('-> '.$file_name.' Migration file invalid');
+					$table_create_migrate = false;
+					// non table-create migration
+					//$this->error('-> '.$file_name.' Migration file invalid');
+
+
 				}
 
                 if ($refresh) {
                     DB::table('migrations')->where('migration', $file_name)->delete();
-					Schema::dropIfExists($table_name);
-                     if (Schema::hasTable($table_name)) {
-                         Schema::drop($table_name);
-                     }
+                    if ($table_create_migrate) {
+						Schema::dropIfExists($table_name);
+						if (Schema::hasTable($table_name)) {
+							Schema::drop($table_name);
+						}
+					}
                 }
 
 				require_once($mainPath.'/'.$basename);
@@ -84,29 +97,35 @@ class CustomMigrateCommand extends Command
 
 				$already_migrate = DB::table('migrations')->where('migration', $file_name)->first();
 				if($already_migrate) {
-					//$this->info($table_name.' => '.Schema::hasTable($table_name));continue;
-					if (Schema::hasTable($table_name)) {
+					if ($table_create_migrate) {
 						$this->line('-> '.$file_name.' ALREADY MIGRATED');
-					} else {
-						$tableClass = new $lastTableClassName();
-						$tableClass->up();
-						$this->info('-> '.$file_name.' SUCCESSFULLY MIGRATED');
-					}
-                } else {
-                    try {
-						DB::table('migrations')->insert(['migration' => $file_name, 'batch' => ($batch_no+1)]);
 						if (!Schema::hasTable($table_name)) {
 							$tableClass = new $lastTableClassName();
 							$tableClass->up();
 							$this->info('-> '.$file_name.' SUCCESSFULLY MIGRATED');
-						} else {
-							$this->info('-> '.$file_name.' ADDED IN MIGRATION TABLE');
 						}
+					} else {
+						$tableClass = new $lastTableClassName();
+						$tableClass->up();
+						$this->info('-> '.$file_name.' SUCCESSFULLY RE-MIGRATED');
+					}
+                } else {
+                    try {
+						DB::table('migrations')->insert(['migration' => $file_name, 'batch' => ($batch_no+1)]);
+						if ($table_create_migrate) {
+							if (Schema::hasTable($table_name)) {
+								$this->info('-> ' . $file_name . ' ADDED IN MIGRATION TABLE');
+							}
+						}
+
+						$tableClass = new $lastTableClassName();
+						$tableClass->up();
+						$this->info('-> '.$file_name.' SUCCESSFULLY MIGRATED');
                     } catch(\Exception $exception) {
-                        // $this->info($exception);
+                    	//$this->error($exception);
                         $this->error('-> SOME PROBLEM OCCURS, PLEASE INFORM TO DEVELOPER <-');
                     }
-                }            
+                }
             }
 
             $this->info('MIGRATION COMPLETED');
