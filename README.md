@@ -1,56 +1,89 @@
 # Laravel Custom DB Migrate
 
-Laravel custom db migrate. You can individual file migrate here.
+Laravel Custom DB Migrate allows fine grain control of migrations inside your Laravel or Lumen application. You can choose which migration files - or groups of files inside the directory - get migrated to the database.
+
+- [Laravel Custom DB Migrate](#laravel-custom-db-migrate)
+    - [Installation](#installation)
+        - [Laravel 5.5 and above](#laravel-55-and-above)
+        - [Laravel 5.4 and older](#laravel-54-and-older)
+        - [Lumen](#lumen)
+    - [Usage](#usage)
+        - [Migrate specific file](#migrate-specific-file)
+        - [Migrate specific directory](#migrate-specific-directory)
+        - [Refreshing migrations](#refreshing-migrations)
+    - [Credits](#credits)
 
 ## Installation
 
-You can start it from composer. Go to your terminal and run this command from your project root directory.
+You can install the package via composer:
 
 ```shell
 composer require sayeed/custom-migrate
 ```
 
-Wait for a while, its download.
+### Laravel 5.5 and above
 
-## Configurations
+The package will automatically register itself, so you can start using it immediately.
 
-After complete installation then you have to configure it. First copy these line paste it in `config/app.php` where `providers` array are exists.
+### Laravel 5.4 and older
+
+In Laravel version 5.4 and older, you have to add the service provider in `config/app.php` file manually:
 
 ```php
-Sayeed\CustomMigrate\CustomMigrateServiceProvider::class,
+'providers' => [
+    // ...
+    Sayeed\CustomMigrate\CustomMigrateServiceProvider::class,
+];
+```
+### Lumen
+
+After installing the package, you will have to register it in `bootstrap/app.php` file manually:
+```php
+// Register Service Providers
+    // ...
+    $app->register(Sayeed\CustomMigrate\CustomMigrateServiceProvider::class);
+];
 ```
 
-Its done.
+## Usage
 
-## How does it work?
+After installing the package, you will now see a new ```php artisan migrate:custom``` command.
 
-Run below command for migrate only pending migrations which is not run yet
+### Migrate specific file
 
-```php artisan migrate:custom```
-
-##### Options
-```--file``` for exact file name (filename must be without extension)
-
-```--refresh``` for existing table
-
-```--directory``` for subdirectory in migrations folder
-
-###### All option has Shortcuts, like
-`-f`  for file
-
-`-r` for refresh
-
-`-d` for directory
-
-NB: For shortcut use, don't use equal(=) sign, just use space, like
+You can migrate a specific file inside your `database/migrations` folder using:
 
 ```php artisan migrate:custom -f 2018_10_14_054732_create_tests_table```
 
+Alternatively, you can use the longform version:
 
+```php artisan migrate:custom --file 2018_10_14_054732_create_tests_table```
 
-If you have any kind of query, please feel free to share with me
+### Migrate specific directory
 
-Thank you
+You can migrate a specific directory inside your `database/migrations` folder using:
 
- 
+```php artisan migrate:custom -d migrations-subfolder```
 
+Alternatively, you can use the longform version:
+
+```php artisan migrate:custom --directory migrations-subfolder```
+
+### Refreshing migrations
+
+You can refresh migrations inside your project using:
+
+```php artisan migrate:custom -r```
+
+Alternatively, you can use the longform version:
+
+```php artisan migrate:custom --refresh```
+
+## Credits
+
+- [Md. Hasan Sayeed](https://github.com/nilpahar)
+- [Gal Jakic](https://github.com/morpheus7CS)
+
+ For any questions, you can reach out to the author of this package, Md. Hasan Sayeed.
+
+ Thank you for using it.
