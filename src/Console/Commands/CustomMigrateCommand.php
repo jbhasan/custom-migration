@@ -62,13 +62,14 @@ class CustomMigrateCommand extends Command
             	$basename = basename($file);
                 $file_info = pathinfo($basename);
                 $file_name = $file_info['filename'];
-				$file_content = explode("Schema::create('", file_get_contents($file));
+				$file_content = explode("Schema::create(", file_get_contents($file));
 
 				$table_create_migrate = true;
 				if (count($file_content) > 1) {
-					$file_content = explode("', function (Blueprint", $file_content[1]);
+					$file_content = explode("'", $file_content[1]);
 					if (count($file_content) > 1) {
-						$table_name = $file_content[0];
+                        $table_name = trim($file_content[0], '"');
+						$table_name = trim($table_name, "'");
 					} else {
 						$this->error('-> '.$file_name.' Migration file invalid');
 						continue;
