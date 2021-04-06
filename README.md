@@ -81,7 +81,7 @@ Alternatively, you can use the longform version:
 
 ## Credits
 
-- [Md. Hasan Sayeed](https://github.com/nilpahar)
+- [Md. Hasan Sayeed](https://github.com/jbhasan)
 - [Gal Jakic](https://github.com/morpheus7CS)
 
  For any questions, you can reach out to the author of this package, Md. Hasan Sayeed.
