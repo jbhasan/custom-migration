@@ -3,6 +3,7 @@
 namespace Sayeed\CustomMigrate;
 
 use Illuminate\Support\ServiceProvider;
+use Sayeed\CustomMigrate\Console\Commands\CustomMigrateCommand;
 
 class CustomMigrateServiceProvider extends ServiceProvider
 {
@@ -24,7 +25,7 @@ class CustomMigrateServiceProvider extends ServiceProvider
     public function register()
     {
         $this->commands([
-            \Sayeed\CustomMigrate\Commands\CustomMigrateCommand::class,
+            CustomMigrateCommand::class,
         ]);
     }
 }
