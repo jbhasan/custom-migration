@@ -24,7 +24,7 @@ class CustomMigrateServiceProvider extends ServiceProvider
     public function register()
     {
         $this->commands([
-            \Sayeed\CustomMigrate\Commands\CustomMigrateCommand::class,
+            \Sayeed\CustomMigrate\Console\Commands\CustomMigrateCommand::class,
         ]);
     }
 }
